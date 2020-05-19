@@ -24,7 +24,7 @@
 						<td><%= link_to @book.title, @book_new %></td>
 						<td><%= @book.body %></td>
 
-						<!-- いいね機能追加-->
+						<!-- いいね機能-->
 						<td><% if current_user.already_favorited?(@book) %>
 							<%= link_to book_favorites_path(@book), method: :delete do %>
 								<i class="fas fa-heart"></i>
@@ -37,6 +37,12 @@
 							<%= @book.favorites.count %>
 						<% end %></td>
 
+					<!--コメント数-->
+					<td>
+						コメント数<%= @book.book_comments.count %>
+					</td>
+
+
 						<td><% if @book.user == current_user %></td>
 							<td><%= link_to "Edit",edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %></td>
 							<td><%= link_to "Destroy",@book, method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
@@ -44,6 +50,34 @@
 					</tr>
 				</table>
 
+					<!--コメント機能-->
+					<td><%= form_for [@book, @book_comment] do |f| %>
+						<div class="row" >
+							<div class="col-sm-12" >
+								<%= f.text_area :comment, rows:'5',  class:"form-control",placeholder:"コメント"  %>
+							</div>
+						</div>
+						<%= f.submit "送信",class:"btn btn-lg btn-base-1 mt-20 pull-right" %>
+						<% end %></td>
+
+						<table>
+							<thead>
+							<tr>
+								<th>コメントした人</th>
+								<th>コメント内容</th>
+							</tr>
+							</thead>
+							<tbody>
+								<% @book.book_comments.each do |book_comment| %>
+								<tr>
+										<td><%= book_comment.user.name %></td>
+										<td><%= book_comment.comment %></td>
+										<td><% if book_comment.user_id == current_user.id %>
+											<%= link_to "Destroy", book_book_comments_path(@book.id,book_comment.id), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-xs btn-danger" %>
+											<% end %>
+											<% end %>
+									</td>
+								</tr>
 		</div>
 	</div>
 </div>
